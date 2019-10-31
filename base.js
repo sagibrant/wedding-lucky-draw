@@ -51,7 +51,7 @@ for (var i = 0; i < _guests.length; i++) {
 }
 
 var _blackList = ["张骕珺"];
-var _levelList = ["三等奖", "二等奖", "一等奖"];
+var _levelList = ["抽&#12288;奖"];//["三等奖", "二等奖", "一等奖"];
 var _cheatList = {
     "一等奖": ["赵宬侃"],
     "二等奖": ["曹&#12288;频", "郁惠红"],
@@ -125,6 +125,10 @@ var app = new Vue({
                 event.preventDefault();
                 event.stopPropagation();
             } else if (this.status == 0) {
+				if(_levelList.length == 1){
+					// only one level, we do not need to change the level, just continue to draw
+					return;
+				}
                 this.level = this.level + 1;
                 if (this.level >= _levelList.length)
                     this.level = 0;
