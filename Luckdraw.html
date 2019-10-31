@@ -11,8 +11,8 @@
 <body>
 	<div id="app" v-on:click="draw()">
 		<div class="layout">
-			<img src="square.png" width="600" height="250" class="square"/>
-			<span class="name" v-html="luckMan">{{luckMan}}</span>
+			<img src="square.png" width="600" height="250" class="square clickable" v-on:click="levelChange($event)" />
+			<span class="name clickable" v-html="luckMan" v-on:click="levelChange($event)">{{luckMan}}</span>
 		</div>
 	</div>
 </body>
