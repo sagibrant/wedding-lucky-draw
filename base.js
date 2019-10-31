@@ -50,8 +50,13 @@ for (var i = 0; i < _guests.length; i++) {
     }
 }
 
-var _blacklist = ["张骕珺"];
-var winnerIndex = 0;
+var _blackList = ["张骕珺"];
+var _levelList = ["三等奖", "二等奖", "一等奖"];
+var _cheatList = {
+    "一等奖": ["赵宬侃"],
+    "二等奖": ["曹&#12288;频", "郁惠红"],
+    "三等奖": ["尹鹏吉", "张碧菱", "陈&#12288;帅"]
+};
 
 function drawOne() {
     winnerIndex = Math.floor(Math.random() * (_guests.length - 1 + 1)) + 0;
@@ -62,8 +67,8 @@ function drawOne() {
 
 function handleBlackList() {
     var inBalckList = false;
-    for (var j = 0; j < _blacklist.length; j++) {
-        if (app.luckMan == _blacklist[j]) {
+    for (var j = 0; j < _blackList.length; j++) {
+        if (app.luckMan == _blackList[j]) {
             inBalckList = true;
             break;
         }
@@ -73,31 +78,28 @@ function handleBlackList() {
         handleBlackList();
     }
 }
-var bSpec = false;
 
-function handleSpec() {
-    if (app.level == 2 && !bSpec) {
-        app.luckMan = "曹&#12288;频";
-        bSpec = true;
+function handleCheatList() {
+    var levelName = _levelList[app.level];
+    var winnerList = _cheatList[levelName];
+    if (winnerList == null || winnerList.length == 0) {
+        return;
     }
+
+    app.luckMan = winnerList[0];
+    _cheatList[levelName] = winnerList.slice(1);
 }
 
 function updateDrawLevel() {
-    if (app.level == 1) {
-        app.luckMan = "一等奖";
-    } else if (app.level == 2) {
-        app.luckMan = "二等奖";
-    } else if (app.level == 3) {
-        app.luckMan = "三等奖";
-    }
+    app.luckMan = _levelList[app.level];
 }
 
 var app = new Vue({
     el: '#app',
     data: {
-        level: 3,
+        level: 0,
         guests: _guests,
-        luckMan: "三等奖",
+        luckMan: _levelList[0],
         interval: null,
         status: 0 // 0: ready to draw; 1: drawing; 2: drawed
     },
@@ -113,21 +115,21 @@ var app = new Vue({
                 clearInterval(this.interval);
                 this.interval = null;
                 handleBlackList();
-                handleSpec();
+                handleCheatList();
                 this.status = 2;
             }
         },
         levelChange: function levelChange(event) {
             if (this.status == 2) {
-                draw();
+                this.draw();
                 event.preventDefault();
                 event.stopPropagation();
             } else if (this.status == 0) {
-                this.level = this.level - 1;
-                if (this.level > 3)
-                    this.level = 1;
-                if (this.level < 1)
-                    this.level = 3;
+                this.level = this.level + 1;
+                if (this.level >= _levelList.length)
+                    this.level = 0;
+                if (this.level < 0)
+                    this.level = _levelList.length - 1;
                 updateDrawLevel();
                 event.preventDefault();
                 event.stopPropagation();
